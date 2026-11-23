@@ -42,7 +42,8 @@
           "photosPermission": "Daily Fitted lets you post an outfit photo from your camera roll.",
           "microphonePermission": false
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,

@@ -1,8 +1,9 @@
 import 'react-native-url-polyfill/auto';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
 import { AppState, Platform } from 'react-native';
+
+import { secureSessionStorage } from './secure-session-storage';
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
@@ -18,8 +19,9 @@ if (!supabaseUrl || !supabaseKey) {
 // Security in the database.
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
-    // Keep the session on the device so users stay signed in between launches.
-    storage: AsyncStorage,
+    // Keep the session on the device, encrypted, so users stay signed in
+    // between launches. See secure-session-storage.ts.
+    storage: secureSessionStorage,
     persistSession: true,
     autoRefreshToken: true,
     // There are no sign-in links in this app (we use typed codes), so there

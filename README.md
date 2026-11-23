@@ -38,6 +38,7 @@ flowchart LR
 - **Privacy is enforced in the database.** Every table has Row Level Security. The API runs each request's queries *as the signed-in user* (`SET LOCAL ROLE authenticated` plus the verified JWT claims), so even a buggy API query can't return someone else's private rows. [`supabase/tests/rls.test.mjs`](supabase/tests/rls.test.mjs) proves the rules: strangers, pending requests, and blocked friends can't see outfits or photos.
 - **Posting never waits on AI.** A database trigger adds a detection job in the same transaction as the outfit. Workers claim jobs with `SELECT ... FOR UPDATE SKIP LOCKED`, so many workers can run safely with no extra queue service. Failed jobs retry with exponential backoff, and jobs from crashed workers are picked up again.
 - **Fast posting (goal: under 10 seconds).** The photo is shrunk and uploaded in the background as soon as it's taken, so tapping Post only waits for the last bit of the upload.
+- **The sign-in session is encrypted on the phone.** A random AES-256 key is kept in the iOS Keychain, and the session is stored encrypted with AES-GCM ([`secure-session-storage.ts`](apps/mobile/src/lib/secure-session-storage.ts)).
 - **Photos are private files.** They're stored by path in a private bucket and shown with signed URLs that expire after an hour.
 - **Fractional ranking.** Outfits get a numeric `rank_key`. Inserting between two outfits uses their midpoint, so only one row changes.
 
