@@ -135,7 +135,15 @@ const styles = StyleSheet.create({
   content: { flex: 1, padding: 16, gap: 12 },
   preview: { flex: 1, borderRadius: 16 },
   placeholder: { alignItems: 'center', justifyContent: 'center' },
-  caption: { borderWidth: 1, borderRadius: 14, paddingHorizontal: 16, paddingVertical: 12, fontSize: 16 },
+  caption: {
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    // Explicit, so iOS can't carry over the code input's wide spacing.
+    letterSpacing: 0,
+  },
   actions: { gap: 10 },
   secondaryRow: { flexDirection: 'row', gap: 10 },
   flex: { flex: 1 },

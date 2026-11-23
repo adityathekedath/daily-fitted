@@ -6,7 +6,9 @@
 create role anon nologin;
 create role authenticated nologin;
 
--- Supabase grants table access to these roles by default and relies on RLS.
+-- Mirrors what the hosted project actually does: its default privileges give
+-- the API roles broad rights (including TRUNCATE) on every new table. The
+-- migrations must revoke those and grant only what each table needs.
 grant usage on schema public to anon, authenticated;
 alter default privileges in schema public grant all on tables to anon, authenticated;
 alter default privileges in schema public grant all on sequences to anon, authenticated;

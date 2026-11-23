@@ -14,8 +14,13 @@ import { supabase } from '@/lib/supabase';
 import { Button } from '@/ui/button';
 import { useTheme } from '@/ui/theme';
 
+// Supabase's code length is a project setting (6 to 10 digits; this project
+// uses 8). Accept any of them so a settings change can't break sign-in.
+const MIN_CODE_LENGTH = 6;
+const MAX_CODE_LENGTH = 10;
+
 /**
- * Passwordless sign-in: enter your email, get a 6-digit code, type it in.
+ * Passwordless sign-in: enter your email, get a one-time code, type it in.
  * The same flow creates the account the first time. No passwords to store
  * or leak, and no links to open in a browser.
  */
@@ -110,20 +115,26 @@ export default function SignInScreen() {
           </View>
         ) : (
           <View style={styles.form}>
-            <Text style={{ color: theme.muted }}>We sent a 6-digit code to {trimmedEmail}.</Text>
+            <Text style={{ color: theme.muted }}>We sent a sign-in code to {trimmedEmail}.</Text>
             <TextInput
               style={[inputStyle, styles.codeInput]}
-              placeholder="123456"
+              placeholder="Code"
               placeholderTextColor={theme.muted}
               keyboardType="number-pad"
               textContentType="oneTimeCode"
               autoComplete="one-time-code"
-              maxLength={6}
+              maxLength={MAX_CODE_LENGTH}
               value={code}
-              onChangeText={setCode}
+              // Keep digits only (pasted codes can include spaces).
+              onChangeText={(text) => setCode(text.replace(/\D/g, ''))}
               autoFocus
             />
-            <Button title="Sign in" onPress={verifyCode} loading={busy} disabled={code.length !== 6} />
+            <Button
+              title="Sign in"
+              onPress={verifyCode}
+              loading={busy}
+              disabled={code.length < MIN_CODE_LENGTH}
+            />
             <Button
               title="Use a different email"
               variant="secondary"
@@ -148,8 +159,17 @@ const styles = StyleSheet.create({
   title: { fontSize: 34, fontWeight: '700' },
   subtitle: { fontSize: 16, marginBottom: 24 },
   form: { gap: 14 },
-  input: { borderWidth: 1, borderRadius: 14, paddingHorizontal: 16, paddingVertical: 14, fontSize: 17 },
-  codeInput: { fontSize: 28, letterSpacing: 8, textAlign: 'center' },
+  // letterSpacing is set on every input on purpose: iOS reuses text inputs
+  // between screens, and an unset value can carry over from another input.
+  input: {
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 17,
+    letterSpacing: 0,
+  },
+  codeInput: { fontSize: 28, letterSpacing: 6, textAlign: 'center' },
   checkboxRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 4 },
   checkbox: {
     width: 24,

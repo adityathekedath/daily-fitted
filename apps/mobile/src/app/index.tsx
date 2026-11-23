@@ -86,7 +86,14 @@ export default function MyFitsScreen() {
                 transition={150}
                 accessibilityLabel={item.caption ?? `Outfit from ${item.worn_on}`}
               />
-              <Text style={[styles.date, { color: theme.muted }]}>{formatDate(item.worn_on)}</Text>
+              <View style={styles.meta}>
+                {item.caption ? (
+                  <Text style={[styles.caption, { color: theme.text }]} numberOfLines={2}>
+                    {item.caption}
+                  </Text>
+                ) : null}
+                <Text style={[styles.date, { color: theme.muted }]}>{formatDate(item.worn_on)}</Text>
+              </View>
             </View>
           )}
         />
@@ -112,6 +119,8 @@ const styles = StyleSheet.create({
   row: { gap: 12 },
   cell: { flex: 1, maxWidth: '50%', gap: 6 },
   photo: { width: '100%', aspectRatio: 3 / 4, borderRadius: 12 },
+  meta: { gap: 2 },
+  caption: { fontSize: 14, lineHeight: 19 },
   date: { fontSize: 13 },
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 6, paddingTop: 120 },
   emptyTitle: { fontSize: 20, fontWeight: '600' },

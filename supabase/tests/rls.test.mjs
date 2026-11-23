@@ -239,6 +239,28 @@ describe('writes', () => {
   });
 });
 
+describe('table permissions', () => {
+  for (const table of ['profiles', 'friendships', 'blocks', 'outfits', 'detection_jobs']) {
+    test(`app users cannot empty the ${table} table (TRUNCATE skips RLS)`, async () => {
+      const me = await signUp();
+      await assert.rejects(
+        asUser(me, (tx) => tx.query(`truncate public.${table}`)),
+        /permission denied/,
+      );
+    });
+  }
+
+  test('app users cannot create profiles directly', async () => {
+    const me = await signUp();
+    await assert.rejects(
+      asUser(me, (tx) =>
+        tx.query('insert into public.profiles (id, age_confirmed_at) values ($1, now())', [randomUUID()]),
+      ),
+      /permission denied/,
+    );
+  });
+});
+
 describe('detection job queue', () => {
   test('every new outfit gets a queued detection job', async () => {
     const me = await signUp();

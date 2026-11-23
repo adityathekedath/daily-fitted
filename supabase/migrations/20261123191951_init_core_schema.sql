@@ -209,6 +209,17 @@ alter table public.blocks         enable row level security;
 alter table public.outfits        enable row level security;
 alter table public.detection_jobs enable row level security;
 
+-- Table access is granted explicitly, table by table. The project does not
+-- auto-grant new tables to the API roles, so nothing is reachable unless it
+-- is listed here, and RLS then decides which rows. (These grants are also
+-- correct on projects that do auto-grant: the revokes below still apply.)
+grant select, insert, delete on public.profiles, public.friendships, public.blocks, public.outfits
+  to authenticated;
+-- Profiles are created by the sign-up trigger, never inserted or deleted by
+-- users directly (account deletion will be its own flow).
+revoke insert, delete on public.profiles from authenticated;
+-- Friendships, blocks, and outfits have no "edit" beyond the column grants below.
+
 -- Signed-out visitors (the "anon" role) get nothing.
 revoke all on public.profiles, public.friendships, public.blocks,
               public.outfits, public.detection_jobs from anon;

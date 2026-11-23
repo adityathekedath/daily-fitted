@@ -4,7 +4,7 @@ Expo (SDK 58) + Expo Router + TypeScript. Routes live in `src/app/`.
 
 ```
 src/app/_layout.tsx   Session check; signed-out users only see sign-in
-src/app/sign-in.tsx   Email + 6-digit code sign-in (also creates the account)
+src/app/sign-in.tsx   Email + one-time code sign-in (also creates the account)
 src/app/index.tsx     "My fits": your outfit diary
 src/app/post.tsx      Camera → background upload → post
 src/lib/supabase.ts   Supabase client (auth session saved on device)
