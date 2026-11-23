@@ -1,0 +1,15 @@
+{
+  "name": "daily-fitted",
+  "private": true,
+  "description": "Repo-level tools. The app lives in apps/mobile and the backend in services/api.",
+  "scripts": {
+    "db:link": "supabase link",
+    "db:push": "supabase db push",
+    "db:new": "supabase migration new",
+    "test:db": "node --test supabase/tests/*.test.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.6.0",
+    "supabase": "^3.3.0"
+  }
+}

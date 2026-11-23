@@ -1,0 +1,52 @@
+[project]
+name = "dailyfitted-api"
+version = "0.1.0"
+description = "Daily Fitted backend: HTTP API (FastAPI) and item-detection worker"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.165.0",
+    "httpx>=0.28.1",
+    "psycopg[binary,pool]>=3.3.9",
+    "pydantic-settings>=2.16.3",
+    "pyjwt[crypto]>=2.15.1",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[project.scripts]
+dailyfitted-api = "dailyfitted_api:main"
+dailyfitted-worker = "dailyfitted_api.worker.run:main"
+
+[build-system]
+requires = ["uv_build>=0.13.9,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4.1",
+    "pytest>=9.2.0",
+    "ruff>=0.17.6",
+]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+# E/F: errors, I: import order, B: likely bugs, UP: modern syntax, S: security, ASYNC: async mistakes
+select = ["E", "F", "I", "B", "UP", "S", "ASYNC", "RUF"]
+ignore = [
+  "S104", # binding 0.0.0.0 is intended inside a container
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106"] # asserts and fake secrets are fine in tests
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
